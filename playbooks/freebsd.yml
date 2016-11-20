@@ -1,0 +1,12 @@
+---
+- hosts: all
+  sudo: True
+  tasks:
+#    - name: no dhcp
+#      replace: >-
+#        dest=/etc/rc.conf
+#        regexp='^ifconfig_DEFAULT="SYNCDHCP"'
+#        replace='#ifconfig_DEFAULT="SYNCDHCP"'
+    - name: ensure basic packages
+      pkgng: name=git,vim-lite,zsh,bash-static,screen state=present
+
