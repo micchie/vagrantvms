@@ -31,7 +31,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision :shell, :inline => "ln -sf /usr/local/bin/python /usr/bin/python || true"
   config.vm.provision :ansible do |ansible|
     ansible.playbook = "../playbooks/freebsd.yml"
-    ansible.host_vars {
+    ansible.host_vars = {
       "default" => {"user" => "vagrant"}
     }
     ansible.verbose = true
