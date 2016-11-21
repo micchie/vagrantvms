@@ -1,5 +1,7 @@
 ---
 - hosts: all
+  vars:
+    home: "/home/{{ user }}"
   sudo: True
   tasks:
 #    - name: no dhcp
@@ -9,4 +11,20 @@
 #        replace='#ifconfig_DEFAULT="SYNCDHCP"'
     - name: ensure basic packages
       pkgng: name=git,vim-lite,zsh,bash-static,screen state=present
-
+    - name: disable noisy banner which kills fabric
+      lineinfile: >-
+        dest='{{home}}/.profile'
+        regexp='.*freebsd\-tips.*'
+        state=absent
+    - name: link /bin/bash
+      shell: "! [ -f /bin/bash ] && ln -s /usr/local/bin/bash /bin/bash || true"
+    - name: /bin/bash in /etc/shells
+      lineinfile: >-
+        dest=/etc/shells
+        create=no
+        state=present
+        line='/bin/bash'
+    - name: make /usr/src
+      file: path=/usr/src owner={{user}} mode=0777 state=directory
+    - name: make /usr/obj
+      file: path=/usr/obj owner={{user}} mode=0777 state=directory

@@ -12,6 +12,7 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
+  #config.vm.define "debian"
   config.vm.box = "debian/jessie64"
   config.vm.base_mac = "080027D14C86"
 
@@ -30,6 +31,9 @@ Vagrant.configure("2") do |config|
   #config.vm.provision :shell, :inline => "ln -sf /usr/local/bin/python /usr/bin/python || true"
   config.vm.provision :ansible do |ansible|
     ansible.playbook = "../playbooks/debian.yml"
+    ansible.host_vars = {
+      "default" => {"user" => "vagrant"}
+    }
     ansible.verbose = true
     ansible.limit = 'all'
   end

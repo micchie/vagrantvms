@@ -2,7 +2,7 @@
 ---
 - hosts: all
   vars:
-    home: /home/vagrant
+    home: "/home/{{ user }}"
   sudo: True
   tasks:
     - name: ensure basic packages
@@ -33,7 +33,7 @@
         state=present
         line='add_drivers+="e1000e e1000 ixgbe"'
       #- name: touch .bashrc
-      #file: path={{home}}/.bash_profile owner=vagrant mode=0644 state=touch
+      #file: path={{home}}/.bash_profile owner={{ user }} mode=0644 state=touch
     - name: set PATH for bash
       lineinfile: >-
         dest={{home}}/.bash_profile
