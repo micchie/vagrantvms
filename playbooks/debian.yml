@@ -18,6 +18,7 @@
         - gcc
         - build-essential
         - libncurses-dev
+        - tcpdump
     - name: download dracut 040
       get_url:
         # tarball in kernel.org doesn't work
