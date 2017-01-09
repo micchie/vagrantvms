@@ -19,6 +19,7 @@
         - build-essential
         - libncurses-dev
         - tcpdump
+        - hfsprogs
     - name: download dracut 040
       get_url:
         # tarball in kernel.org doesn't work
