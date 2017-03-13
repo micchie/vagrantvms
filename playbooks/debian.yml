@@ -17,6 +17,7 @@
         - automake
         - gcc
         - build-essential
+        - libtool
         - libncurses-dev
         - tcpdump
         - hfsprogs
