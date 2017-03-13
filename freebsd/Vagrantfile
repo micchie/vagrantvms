@@ -2,12 +2,11 @@ Vagrant.configure("2") do |config|
   config.vm.guest = :freebsd
   config.vm.synced_folder ".", "/vagrant", id: "vagrant-root", disabled: true
   #
-  # If you have not yet setup a freebsd11 box based on
-  # freebsd/FreeBSD-11.0-STABLE, modifying /etc/rc.conf
-  # not to perform DHCP for all the interfaces and 
-  # installing basic packages, create it by "vagrant 
-  # package"
-  # When doing so, comment out private network configuration.
+  # If you have not yet setup a custom freebsd11 box based on
+  # freebsd/FreeBSD-11.0-STABLE, create one by "vagrant package" command 
+  # with modified /etc/rc.conf not to perform DHCP for all the 
+  # interfaces and basic packages.
+  # In the process of doing so, comment out private network configuration below.
   #
   #config.vm.box = "freebsd/FreeBSD-11.0-STABLE"
   config.vm.box = "freebsd11" # based on above image
