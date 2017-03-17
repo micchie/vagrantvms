@@ -21,6 +21,9 @@
         - libncurses-dev
         - tcpdump
         - hfsprogs
+        - elfutils
+        - libdw-dev
+        - gettext
     - name: download dracut 040
       get_url:
         # tarball in kernel.org doesn't work
@@ -30,6 +33,24 @@
       shell: tar xzf {{home}}/dracut-040.tar.gz -C {{home}}/
     - name: install dracut
       shell: cd {{home}}/dracut-040 && ./configure && make && make install && cd -
+    - name: download systemtap
+      git: >-
+        repo=git://sourceware.org/git/systemtap.git
+        dest='{{home}}/systemtap'
+    - name: patch systemtap
+      lineinfile: >-
+        dest={{home}}/systemtap/configure
+        state=present
+        regexp='{{ item.regexp }}'
+        line='echo ignore msgfmt missing'
+      with_items:
+      - regexp: 'missing gnu /usr/bin/msgfmt'
+
+    - name: compile systemtap
+      shell: cd {{home}}/systemtap && ./configure python='/usr/bin/python' pyexecdir='${exec_prefix}/lib/python2.7/dist-packages' --prefix=/home/vagrant/systemtap-3.2-14849 && make all && cd -
+    - name: install systemtap
+      shell: cd {{home}}/systemtap && make install
+
     - name:  edit dracut.conf
       lineinfile: >-
         dest=/etc/dracut.conf
