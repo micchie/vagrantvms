@@ -6,7 +6,7 @@
   sudo: True
   tasks:
     - name: ensure basic packages
-      apt: name={{ item }} state=present
+      apt: name={{ item }} state=present update_cache=yes
       with_items:
         - ethtool
         - git
@@ -24,6 +24,8 @@
         - elfutils
         - libdw-dev
         - gettext
+        - flex
+        - bison
     - name: download dracut 040
       get_url:
         # tarball in kernel.org doesn't work
@@ -35,7 +37,7 @@
       shell: cd {{home}}/dracut-040 && ./configure && make && make install && cd -
     - name: download systemtap
       git: >-
-        repo=git://sourceware.org/git/systemtap.git
+        repo=https://github.com/RasPlex/systemtap.git
         dest='{{home}}/systemtap'
     - name: patch systemtap
       lineinfile: >-
