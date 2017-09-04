@@ -26,6 +26,12 @@
         - gettext
         - flex
         - bison
+        - pkg-config # for ndctl (until asciidoc)
+        - libjson-c-dev
+        - uuid-dev
+        - libudev-dev
+        - libkmod-dev
+        - asciidoc
     - name: download dracut 040
       get_url:
         # tarball in kernel.org doesn't work
