@@ -11,42 +11,15 @@ Vagrant.configure("2") do |config|
   # https://docs.vagrantup.com.
 
   # Every Vagrant development environment requires a box. You can search for
-  # boxes at https://atlas.hashicorp.com/search.
-  #config.vm.define "debian"
-  config.vm.box = "linux-4.11-extmem-stack"
-  config.vm.synced_folder "src/", "/srv/website", disabled: true
-  config.vm.synced_folder ".", "/vagrant", disabled: true
-  config.vm.base_mac = "080027D14C86"
-
-  config.vm.network :"private_network", ip: "192.168.11.3", virtualbox__intnet: "intnet1"
-  config.vm.network :"private_network", ip: "192.168.12.3", virtualbox__intnet: "intnet2"
-  config.vm.network :"private_network", ip: "192.168.13.3"
-
+  # boxes at https://vagrantcloud.com/search.
+  config.vm.guest = :freebsd
+  config.vm.synced_folder ".", "/vagrant", id: "vagrant-root", disabled: true
+  config.vm.box = "freebsd/FreeBSD-12.0-CURRENT"
+  config.vm.base_mac = "080027D14CA6"
+  config.ssh.shell = "sh"
   config.vm.provider :virtualbox do |vb|
     vb.gui = true
-    #vb.customize ["modifyvm", :id, "--memory", "4096"]
-    vb.customize ["modifyvm", :id, "--memory", "3100"]
- #   vb.customize ["modifyvm", :id, "--memory", "2100"]
-    vb.customize ["modifyvm", :id, "--cpus", "2"]
-    vb.customize ["modifyvm", :id, "--hwvirtex", "on"]
-    vb.customize ["modifyvm", :id, "--audio", "none"]
-    vb.customize ["modifyvm", :id, "--nictype1", "virtio"]
-    vb.customize ["modifyvm", :id, "--uart1", "0x3F8", "4"]
-    vb.customize ["modifyvm", :id, "--uartmode1", "server", "/tmp/vagrant-ttyS0.sock"]
-    vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all", "--nicpromisc3", "allow-all", "--nicpromisc4", "allow-all"]
   end
-  #config.vm.provision :shell, :inline => "[ ! -f /usr/local/bin/python ] && /usr/sbin/pkg install -y python || true"
-  #config.vm.provision :shell, :inline => "ln -sf /usr/local/bin/python /usr/bin/python || true"
-  config.vm.provision :ansible do |ansible|
-    ansible.playbook = "../playbooks/debian.yml"
-    ansible.host_vars = {
-      "default" => {"user" => "vagrant"}
-    }
-    ansible.verbose = true
-    ansible.limit = 'all'
-  end
-
-
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
   # `vagrant box outdated`. This is not recommended.
@@ -55,7 +28,13 @@ Vagrant.configure("2") do |config|
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 80 on the guest machine.
+  # NOTE: This will enable public access to the opened port
   # config.vm.network "forwarded_port", guest: 80, host: 8080
+
+  # Create a forwarded port mapping which allows access to a specific port
+  # within the machine from a port on the host machine and only allow access
+  # via 127.0.0.1 to disable public access
+  # config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
@@ -86,13 +65,6 @@ Vagrant.configure("2") do |config|
   #
   # View the documentation for the provider you are using for more
   # information on available options.
-
-  # Define a Vagrant Push strategy for pushing to Atlas. Other push strategies
-  # such as FTP and Heroku are also available. See the documentation at
-  # https://docs.vagrantup.com/v2/push/atlas.html for more information.
-  # config.push.define "atlas" do |push|
-  #   push.app = "YOUR_ATLAS_USERNAME/YOUR_APPLICATION_NAME"
-  # end
 
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
