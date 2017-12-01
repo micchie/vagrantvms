@@ -1,0 +1,45 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure("2") do |config|
+  # The most common configuration options are documented and commented below.
+  # For a complete reference, please see the online documentation at
+  # https://docs.vagrantup.com.
+
+  # Every Vagrant development environment requires a box. You can search for
+  # boxes at https://vagrantcloud.com/search.
+  config.vm.guest = :freebsd
+  config.vm.synced_folder ".", "/vagrant", id: "vagrant-root", disabled: true
+  config.vm.box = "freebsd12"
+  config.vm.network :forwarded_port, guest: 22, host: 3332, id: "ssh"
+  config.vm.base_mac = "080027D14C26"
+
+  config.vm.network :"private_network", ip: "192.168.11.2", virtualbox__intnet: "intnet1"
+  config.vm.network :"private_network", ip: "192.168.12.2", virtualbox__intnet: "intnet2"
+
+  config.vm.provider :virtualbox do |vb|
+    vb.gui = true
+    vb.customize ["modifyvm", :id, "--memory", "1024"]
+    vb.customize ["modifyvm", :id, "--cpus", "2"]
+    vb.customize ["modifyvm", :id, "--hwvirtex", "on"]
+    vb.customize ["modifyvm", :id, "--audio", "none"]
+    vb.customize ["modifyvm", :id, "--uart1", "0x3F8", "4"]
+    vb.customize ["modifyvm", :id, "--nictype1", "virtio"]
+    vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all", "--nicpromisc3", "allow-all"]
+  end
+  config.vm.provision :shell, :inline => "[ ! -f /usr/local/bin/python ] && /usr/sbin/pkg install -y python || true"
+  config.vm.provision :shell, :inline => "ln -sf /usr/local/bin/python /usr/bin/python || true"
+  config.vm.provision :ansible do |ansible|
+    ansible.playbook = "../playbooks/freebsd.yml"
+    ansible.host_vars = {
+      "default" => {"user" => "vagrant"}
+    }
+    ansible.verbose = true
+    ansible.limit = 'all'
+  end
+
+end
