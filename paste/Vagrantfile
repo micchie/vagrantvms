@@ -13,38 +13,34 @@ Vagrant.configure("2") do |config|
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
   #config.vm.define "debian"
-  config.vm.box = "linux-4.11-extmem-stack"
-  config.vm.synced_folder "src/", "/srv/website", disabled: true
-  config.vm.synced_folder ".", "/vagrant", disabled: true
-  config.vm.base_mac = "080027D14C86"
+  config.vm.network :forwarded_port, guest: 22, host: 33333, id: "ssh"
+  config.vm.box = "debian/stretch64"
+  config.vm.base_mac = "080027D14Ca6"
 
-  config.vm.network :"private_network", ip: "192.168.11.3", virtualbox__intnet: "intnet1"
-  config.vm.network :"private_network", ip: "192.168.12.3", virtualbox__intnet: "intnet2"
-  config.vm.network :"private_network", ip: "192.168.13.3"
+  config.vm.network :"private_network", ip: "192.168.18.18"
 
   config.vm.provider :virtualbox do |vb|
     vb.gui = true
-    #vb.customize ["modifyvm", :id, "--memory", "4096"]
-    vb.customize ["modifyvm", :id, "--memory", "3100"]
- #   vb.customize ["modifyvm", :id, "--memory", "2100"]
-    vb.customize ["modifyvm", :id, "--cpus", "2"]
+    vb.customize ["modifyvm", :id, "--memory", "2048"]
+    vb.customize ["modifyvm", :id, "--cpus", "1"]
     vb.customize ["modifyvm", :id, "--hwvirtex", "on"]
     vb.customize ["modifyvm", :id, "--audio", "none"]
     vb.customize ["modifyvm", :id, "--nictype1", "virtio"]
+    vb.customize ["modifyvm", :id, "--nictype2", "82545EM"]
     vb.customize ["modifyvm", :id, "--uart1", "0x3F8", "4"]
-    vb.customize ["modifyvm", :id, "--uartmode1", "server", "/tmp/vagrant-ttyS0.sock"]
-    vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all", "--nicpromisc3", "allow-all", "--nicpromisc4", "allow-all"]
+    vb.customize ["modifyvm", :id, "--uartmode1", "server", "/tmp/vagrant-paste-ttyS0.sock"]
+    vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
   end
   #config.vm.provision :shell, :inline => "[ ! -f /usr/local/bin/python ] && /usr/sbin/pkg install -y python || true"
   #config.vm.provision :shell, :inline => "ln -sf /usr/local/bin/python /usr/bin/python || true"
-  config.vm.provision :ansible do |ansible|
-    ansible.playbook = "../playbooks/debian.yml"
-    ansible.host_vars = {
-      "default" => {"user" => "vagrant"}
-    }
-    ansible.verbose = true
-    ansible.limit = 'all'
-  end
+  #config.vm.provision :ansible do |ansible|
+  #  ansible.playbook = "../../playbooks/kernel.yml"
+  #  ansible.host_vars = {
+  #    "default" => {"user" => "vagrant"}
+  #  }
+  #  ansible.verbose = true
+  #  ansible.limit = 'all'
+  #end
 
 
   # Disable automatic box update checking. If you disable this, then
