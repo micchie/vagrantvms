@@ -10,7 +10,7 @@
 #        regexp='^ifconfig_DEFAULT="SYNCDHCP"'
 #        replace='#ifconfig_DEFAULT="SYNCDHCP"'
     - name: ensure basic packages
-      pkgng: name=git,vim-lite,zsh,bash-static,screen,wrk state=present
+      pkgng: name=git,vim-console,zsh,bash-static,screen,wrk state=present
     - name: disable noisy banner which kills fabric
       lineinfile: >-
         dest='{{home}}/.profile'
