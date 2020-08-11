@@ -15,13 +15,13 @@ Vagrant.configure("2") do |config|
   #config.vm.define "debian"
   config.vm.network :forwarded_port, guest: 22, host: 3333, id: "ssh"
   #config.vm.box = "ubuntu/bionic64"
-  config.vm.box = "ubuntu/bionic64"
-  config.vm.base_mac = "080027D14C88"
-  config.vm.boot_timeout = 480
+  config.vm.box = "ubuntu/groovy64"
+  #config.vm.base_mac = "080027D14C88"
+  #config.vm.boot_timeout = 480
 
-  config.vm.network :"private_network", ip: "192.168.11.4", virtualbox__intnet: "intnet1"
-#  config.vm.network :"private_network", ip: "192.168.12.4", virtualbox__intnet: "intnet2"
-  config.vm.network "private_network", ip: "192.168.33.4"
+  config.vm.network :"private_network", ip: "192.168.11.3", virtualbox__intnet: "intnet1"
+  config.vm.network :"private_network", ip: "192.168.12.3", virtualbox__intnet: "intnet2"
+  config.vm.network :"private_network", ip: "192.168.18.3"
 
   config.vm.provider :virtualbox do |vb|
     vb.gui = true
@@ -29,28 +29,29 @@ Vagrant.configure("2") do |config|
     vb.customize ["modifyvm", :id, "--cpus", "2"]
     vb.customize ["modifyvm", :id, "--hwvirtex", "on"]
     vb.customize ["modifyvm", :id, "--audio", "none"]
-    vb.customize ["modifyvm", :id, "--nictype1", "82540EM"]
-    vb.customize ["modifyvm", :id, "--nictype2", "virtio"]
-    vb.customize ["modifyvm", :id, "--nictype3", "virtio"]
-    #vb.customize ["modifyvm", :id, "--uart1", "0x3F8", "4"]
-    #vb.customize ["modifyvm", :id, "--uartmode1", "server", "/tmp/ubuntu-ttyS1.sock"]
+    vb.customize ["modifyvm", :id, "--nictype1", "virtio"]
+    vb.customize ["modifyvm", :id, "--nictype2", "82540EM"]
+    vb.customize ["modifyvm", :id, "--nictype3", "82540EM"]
+    vb.customize ["modifyvm", :id, "--nictype4", "82540EM"]
+    vb.customize ["modifyvm", :id, "--uart1", "0x3F8", "4"]
+    vb.customize ["modifyvm", :id, "--uartmode1", "file", File::NULL]
+    vb.customize ["modifyvm", :id, "--uartmode1", "server", "/tmp/ubuntu-ttyS1.sock"]
     vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all", "--nicpromisc3", "allow-all"]
-    vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
   end
 
-  config.vm.provision "shell", inline: <<-SHELL
-    apt-get update
-    apt-get install -y python
-  SHELL
+  #config.vm.provision "shell", inline: <<-SHELL
+  #  apt-get update
+  #  apt-get install -y python
+  #SHELL
   config.vm.provision :ansible do |ansible|
     #ansible.playbook = "../../playbooks/debian.yml"
     #ansible.host_vars = {
     #  "default" => {"user" => "vagrant"}
     #}
-    ansible.playbook = '../../playbooks/common.yml'
-    ansible.inventory_path = '../../playbooks/inventories/vagrantvms'
-    ansible.verbose = true
-    ansible.limit = 'va1'
+    ansible.playbook = '../../playbooks/vagrant.yml'
+    #ansible.inventory_path = '../../playbooks/inventories/vagrantvms'
+    #ansible.verbose = true
+    #ansible.limit = 'va1'
   end
 
 
